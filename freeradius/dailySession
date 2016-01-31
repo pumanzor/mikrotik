@@ -1,0 +1,5 @@
+if (NAS-IP-Address == 172.16.15.25) {
+update  control {
+Max-Daily-Session := 3600
+}
+}
