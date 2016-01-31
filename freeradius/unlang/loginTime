@@ -1,0 +1,5 @@
+if (Called-Station-Id == "NAS_ID_") {
+update control {
+Login-time := Wk0701-2000
+}
+}
