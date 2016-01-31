@@ -1,0 +1,5 @@
+if (Nas-IP-Address == 172.16.10.26) {
+update reply {
+WISPr-Redirection-URL := "https://es.surveymonkey.com/"
+}
+}
