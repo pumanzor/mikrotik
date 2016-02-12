@@ -1,0 +1,6 @@
+if (NAS-IP-Address == 172.16.15.25) {
+update reply {
+Mikrotik-Rate-Limit := 5124k/8148k
+Port-Limit := 1
+}
+}
