@@ -2,4 +2,4 @@ Please add this scripts into
 
 authorize {  .... }
 
-section
+section on sites-enable file (ie. /etc/freeradius/sites-enable/default)
