@@ -3,3 +3,7 @@ Please add this scripts into
 authorize {  .... }
 
 section on sites-enable file (ie. /etc/freeradius/sites-enable/default)
+
+
+- URLredirectafterauth: This script allows you to set a custom page after a successful login to the captive portal
+
