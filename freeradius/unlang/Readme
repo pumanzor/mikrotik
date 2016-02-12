@@ -6,4 +6,5 @@ section on sites-enable file (ie. /etc/freeradius/sites-enable/default)
 
 
 - URLredirectafterauth: This script allows you to set a custom page after a successful login to the captive portal
+- custom_error_msg    : In this section you can customize the error message after failed authentication
 
