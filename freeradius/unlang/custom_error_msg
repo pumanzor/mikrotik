@@ -1,0 +1,19 @@
+instantation2
+
+sql{
+            notfound = 1
+            reject = 2
+        }
+        if(notfound){
+        update reply {
+            Reply-Message := "Login Failed. porfavor ingrese nuevamente su RUT y clave"
+        }
+        reject
+        }
+
+        if(reject){
+        update reply {
+            Reply-Message := "Login Failed. porfavor ingrese nuevamente su RUT y clave"
+        }
+        reject
+        }    
