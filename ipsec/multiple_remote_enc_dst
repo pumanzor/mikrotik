@@ -1,0 +1,25 @@
+Mikrotik IPSec VPNs with multiple destination Networks/Policies and SA(s) management.
+
+While configuring Multiple Networks VPNs (Multiple policy and destination SubNets reached via the same remote IPSec VPN Peer) between Mikrotik and other Firewalls, traffic would randomly stop for certain destinations.
+
+Packet forwarding and encryption only works for one destination (the first matched IPSec Policy) and any other destination (and only the first matched one) will be reachable by performing a ‘SA Flush’.
+
+This (apparently a routing misconfiguration) happens because some other firewalls have been configured to create a separate SA for each network policy.
+
+Setting Mikrotik IPSec Policy with the ‘require’ level (default option) causes the router to create a single SA with the remote peer.
+In this configuration, all traffic sent to any policy (in other words to any destination SubNet) for a specific peer, will use the same SA, regardless of the Source or Destination addresses.
+
+For this reason this works only for the first SubNet routed trough the IPSec Tunnel.
+As soon as the Mikrotik Firewall tries to send traffic for another destination SubNet, using a policy with same SA Peer, it will use the already existing SA and the remote peer starts complaining because of SA sequence numbers.
+
+To solve this problem, Mikrotik side, it is necessary to change the policy Level to ‘unique‘, to allow both endpoints to share a unique SA for each Policy and Destination SubNet.
+If the shared SA option is preferred, it is possible to check if the other EndPoint supports per-policy SA Settings.
+
+ 
+
+Policy Level, as Mikrotik Manual and Wiki suggest, specifies what to do if some of the SAs for this policy cannot be found:
+
+    use – skip this transform, do not drop packet and do not acquire SA from IKE daemon.
+    require – drop packet and acquire SA (DEFAULT OPTION SET).
+    unique – drop packet and acquire a unique SA that is only used with this particular policy.
+
