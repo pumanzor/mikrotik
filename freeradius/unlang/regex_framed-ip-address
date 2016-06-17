@@ -1,0 +1,11 @@
+if (Framed-IP-Address =~ /^172\.16\.12\./)  {
+
+update reply {
+#Mikrotik-Rate-Limit := 2048k/1024k
+Port-Limit := 1
+Max-Daily-Session := 3600
+}
+update  control {
+Max-Daily-Session := 3600
+}
+}
