@@ -9,3 +9,31 @@ update  control {
 Max-Daily-Session := 3600
 }
 }
+
+
+
+////////////////////
+> This entry works:
+> Framed-IP-Address =~ /^172\.1[6-9]|2[0-9]|3[0-1]\.[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]\.[0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5]$/
+>
+> This entry doesn't work:
+> Framed-IP-Address =~ /^172\.(1[6-9]|2[0-9]|3[0-1])\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])\.([0-9]|[1-9][0-9]|1[0-9][0-9]|2[0-4][0-9]|25[0-5])$/
+>
+
+Doesn't work how?
+
+> Does anyone know the correct syntax for grouping a entry within a regular expression?
+> It looks like grouping by () is not supported by freeradius?
+
+Not correct; () is the grouping operator.
+
+I suspect you just have the syntax of your regexp wrong. Either that, or 
+your system regexp library is broken - FreeRADIUS just uses that.
+
+The regexp you list above is more complex than it needs to be IMO; 
+Framed-IP-Address can't have the "wrong" syntax because the server 
+enforces it.
+
+Try the simpler:
+
+Framed-IP-Address =~ /^172\.(1[6-9]|2[0-9]|3[01])\./
