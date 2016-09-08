@@ -1,2 +1,2 @@
 # mikrotik
-scripts and usefull info
+scripts and useful info
