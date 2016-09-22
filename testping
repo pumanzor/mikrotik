@@ -1,0 +1,25 @@
+#!/bin/bash
+
+HOSTS="8.8.8.8"
+COUNT=10
+
+#debug
+echo "HOSTS: " $HOSTS
+echo "COUNT: " $COUNT
+######
+for myHost in $HOSTS
+do
+  counting=$(ping -c $COUNT $myHost | grep 'received' | awk -F',' '{ print $2 }' | awk '{ print $1 }')
+  
+  #debug
+  echo "counting: " $counting
+  ######
+  if [ $counting > 2 ]; then
+   echo "Ping OK"
+
+  else
+  
+   echo "Reboot!"
+   reboot
+fi
+done
