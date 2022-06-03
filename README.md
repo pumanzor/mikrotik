@@ -1,4 +1,4 @@
 # mikrotik
 scripts and useful info
 
-dos2222
+2222
