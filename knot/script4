@@ -1,0 +1,106 @@
+:local broker "redlibre"
+:local topic "ok1/devices/me/telemetry"
+:local locatorIface "ether1"
+:local addressRegex ""
+:local advertisingDataRegex ""
+:local rssiThreshold ""
+:local ifaceMac [/interface get [/interface find name=$locatorIface] mac-address]
+:local serialNumber [/system routerboard get value-name=serial-number]
+
+################################## Bluetooth ##################################
+:put ("[*] Gathering Bluetooth info...")
+:global btOldestAdvertisementTimestamp
+:if ([:typeof $btOldestAdvertisementTimestamp] = "nothing") do={
+    :set $btOldestAdvertisementTimestamp 0
+}
+:local btProcessingStart [/system clock get time]
+:local advertisements [/iot bluetooth scanners advertisements print detail as-value where epoch > $btOldestAdvertisementTimestamp and address ~ $addressRegex and data ~ $advertisingDataRegex and rssi > $rssiThreshold]
+:local advJson ""
+:local advCount 0
+:local advSeparator ""
+:local lastAdvTimestamp 0
+# Remove semicolons from MAC/Bluetooth addresses
+:local minimizeMac do={
+    :local minimized
+    :local lastIdx ([:len $address] - 1)
+    :for idx from=0 to=$lastIdx step=1 do={
+        :local char [:pick $address $idx]
+        :if ($char != ":") do={
+            :set $minimized "$minimized$char"
+        }
+    }
+    :return $minimized
+}
+
+
+:foreach adv in=$advertisements do={
+    :local address ($adv->"address")
+    :local ts ($adv->"epoch")
+    :local rssi ($adv->"rssi")
+    :local ad ($adv->"data")
+    :local obj "$[$minimizeMac address=$address]"
+
+   
+ :set $advCount ($advCount + 1)
+    :set $lastAdvTimestamp $ts
+    # Ensure that the last object is not terminated by a comma
+    :set $advJson "$advJson$advSeparator$obj"
+    :if ($advSeparator = "") do={
+        :set $advSeparator ","
+    }
+
+
+#########set gpio##############3
+:if ($advjson = DC2C6E9D2176 || $advjson = DC2C6E0ED016 ) do={
+/iot mqtt publish broker=redlibre topic=ok1 message=DC2C6E9D2176
+:local msg "$[ /iot gpio digital get pin4 output]"
+:log info "$msg";
+
+:local cont 0
+  :while ($cont < 10)  do={ 
+    :set cont ($cont+1); 
+/iot gpio digital set output=0 pin4
+:delay 0.07s;
+/iot gpio digital set output=1 pin4
+:delay 0.07s;
+  }
+
+
+#:local cont 0
+#  :while ($cont < 4)  do={ 
+#   :set cont ($cont+1); 
+/iot gpio digital set output=0 pin4
+:delay 1s;
+/iot gpio digital set output=1 pin4
+:delay 1s;
+
+/iot gpio digital set output=0 pin4
+:delay 1s;
+/iot gpio digital set output=1 pin4
+:delay 1s;
+
+#  }
+
+
+
+/iot gpio digital set output=1 pin4
+/iot gpio digital set output=1 pin4
+/iot gpio digital set output=1 pin4
+:local msg "$[ /iot gpio digital get pin4 output]"
+:log info "$msg"; 
+} else={
+:local msg "$[ /iot gpio digital get pin4 output]"
+:log info "$msg";
+/iot gpio digital set output=0 pin4
+}
+###########fin##############
+}
+
+:if ($advCount > 0) do={
+
+    :set $btOldestAdvertisementTimestamp $lastAdvTimestamp
+
+}
+
+:put ("[*] Found $advCount new advertisements \
+    (processing time: $[([/system clock get time] - $btProcessingStart)])")
